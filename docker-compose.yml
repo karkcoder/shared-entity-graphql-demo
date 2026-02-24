@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres-graphql-db
+    environment:
+      POSTGRES_USER: graphql_user
+      POSTGRES_PASSWORD: graphql_password
+      POSTGRES_DB: graphql_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker/postgres-init:/docker-entrypoint-initdb.d
+    networks:
+      - graphql-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U graphql_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  graphql-network:
+    driver: bridge
